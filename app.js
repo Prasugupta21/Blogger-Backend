@@ -18,7 +18,7 @@ const PORT= 8000;
 connectDB();
 const app=express();
 const corsOptions = {
-  origin: 'https://blogger-frontend-7o83.onrender.com' || 'http://localhost:8000', // your frontend URL
+  origin:'http://localhost:3000'|| 'https://blogger-teal-one.vercel.app/' , // your frontend URL
   credentials: true,
   optionsSuccessStatus: 200
 };

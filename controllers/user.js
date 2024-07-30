@@ -71,7 +71,9 @@ module.exports.Login = async (req, res, next) => {
 };
 
 module.exports.updateUser = async (req, res, next) => {
-  
+  if (req.user.id !== req.params.id) {
+    return res.status(403).json({message:'You are not allowed to update this user',success:'false'} );
+  }
     const updates = {
       name: req.body.name,
       email: req.body.email,
@@ -106,11 +108,11 @@ module.exports.updateUser = async (req, res, next) => {
       { $set: updates },
       { new: true }
     );
-    const {password,...user}=updatedUser._doc;
+    
     return res.status(200).send({
       message: "Profile Updated Successfully",
       success: true,
-      user,
+      updatedUser,
     });
   } catch (error) {
     return res
