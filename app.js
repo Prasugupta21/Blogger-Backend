@@ -1,10 +1,10 @@
 require("dotenv").config();
 
 const express=require("express");
-const path =require('path');
+
 const bodyParser=require("body-parser");
 
-
+const cors=require('cors');
 const cookieParser = require("cookie-parser");
 const userRoute=require('./routes/user')
 const postRoute=require('./routes/post')
@@ -17,7 +17,13 @@ const PORT= 8000;
 
 connectDB();
 const app=express();
+const corsOptions = {
+  origin: 'https://blogger-frontend-7o83.onrender.com' || 'http://localhost:8000', // your frontend URL
+  credentials: true,
+  optionsSuccessStatus: 200
+};
 
+app.use(cors(corsOptions));
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
@@ -30,11 +36,7 @@ app.use('/',userRoute);
 
 app.use('/posts',postRoute);
 app.use('/comments',commentRoute);
-app.use(express.static(path.join(__dirname, '/client/build')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
-});
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
