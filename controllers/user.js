@@ -47,6 +47,11 @@ module.exports.Login = async (req, res, next) => {
     res.cookie("token", token, {
     
       httpOnly: true,
+      sameSite: 'Strict', // Or 'Lax' if you need to allow some cross-site requests
+      secure: true, 
+     
+      
+    
     });
     
     res.status(201).json({
