@@ -22,6 +22,12 @@ const corsOptions = {
   credentials: true,
 
 };
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+// For all other routes, serve the React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
 app.use(cookieParser());
 app.use(cors(corsOptions));
 
