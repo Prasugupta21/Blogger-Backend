@@ -46,7 +46,12 @@ module.exports.Login = async (req, res, next) => {
     const token = jwt.sign({ id:user?._id,isAdmin:user?.isAdmin }, process.env.TOKEN_KEY);
     res.cookie("token", token, {
     
-      secure:true
+    httpOnly: true,
+  secure: true,
+  sameSite: "None",
+  domain: "blogger-backend-psi.vercel.app",
+  maxAge: 86400, // 24 hours
+
       
      
       
