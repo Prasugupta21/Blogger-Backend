@@ -9,7 +9,7 @@ router.get('/',(req,res)=>{
 router.post("/signup",Signup);
 router.post("/login",Login);
 router.get('/getusers',userVerification,getUsers);
-router.post('/update/:id', userVerification,updateUser);
+router.post('/update/:id',userVerification,updateUser);
 router.delete('/delete/:id', userVerification, deleteUser);
 router.get('/:id',getUser);
 

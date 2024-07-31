@@ -46,9 +46,8 @@ module.exports.Login = async (req, res, next) => {
     const token = jwt.sign({ id:user?._id,isAdmin:user?.isAdmin }, process.env.TOKEN_KEY);
     res.cookie("token", token, {
     
-      httpOnly: true,
-      sameSite: 'Strict', // Or 'Lax' if you need to allow some cross-site requests
-      secure: true, 
+      secure:true
+      
      
       
     
@@ -79,17 +78,13 @@ module.exports.updateUser = async (req, res, next) => {
   if (req.user.id !== req.params.id) {
     return res.status(403).json({message:'You are not allowed to update this user',success:'false'} );
   }
-    const updates = {
-      name: req.body.name,
-      email: req.body.email,
-      profilePicture: req.body.profilePicture,
-    };
+    try{
     if(req.body.password){
       if (req.body.password.length < 6) {
         return res.status(400).json({message:'Password must be at least 6 characters' ,success:false});
       }
       const hashedPassword = await bcrypt.hash(req.body.password, 12);
-      updates.password = hashedPassword;
+      req.body.password = hashedPassword;
     }
     if (req.body.name) {
       if (req.body.name.length < 7 || req.body.name.length > 20) {
@@ -107,17 +102,22 @@ module.exports.updateUser = async (req, res, next) => {
        
       }
     }
-    try {
+    
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
-      { $set: updates },
+      { $set: {
+        name:req.body.name,
+        email:req.body.email,
+        password:req.body.password,
+        profilePicture:req.body.profilePicture
+      } },
       { new: true }
     );
-    
-    return res.status(200).send({
+    const {password,...user}=updatedUser._doc;
+    return res.status(201).send({
       message: "Profile Updated Successfully",
       success: true,
-      updatedUser,
+      user,
     });
   } catch (error) {
     return res

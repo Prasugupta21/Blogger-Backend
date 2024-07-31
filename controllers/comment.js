@@ -4,7 +4,7 @@ module.exports.createComment = async (req, res, next) => {
   try {
     const { content, postId, userId } = req.body;
 
-    if (userId !== req.user.id) {
+    if (userId !== req.user.id || !req.user.isAdmin) {
       return res.status(403).json(
         'You are not allowed to create this comment')
       
