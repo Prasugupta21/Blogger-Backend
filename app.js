@@ -18,7 +18,7 @@ const PORT= 8000;
 connectDB();
 const app=express();
 const corsOptions = {
-  origin: '*' , // your frontend URL
+  origin: 'https://blogger-teal-one.vercel.app' , // your frontend URL
   credentials: true,
   optionsSuccessStatus: 200
 };
