@@ -20,7 +20,7 @@ const app=express();
 const corsOptions = {
   origin: 'https://blogger-frontend-7o83.onrender.com' , // your frontend URL
   credentials: true,
-  optionsSuccessStatus: 200
+
 };
 app.use(cookieParser());
 app.use(cors(corsOptions));
