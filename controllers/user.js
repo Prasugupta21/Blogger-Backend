@@ -48,9 +48,11 @@ module.exports.Login = async (req, res, next) => {
     
     httpOnly: true,
   secure: true,
-  
+        sameSite: 'None', // Ensure this if you're doing cross-site cookie sharing
+
   domain: "blogger-backend-tzyw.onrender.com",
   maxAge: 86400, // 24 hours
+      
 
       
      
