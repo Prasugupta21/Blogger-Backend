@@ -18,7 +18,7 @@ const PORT= 8000;
 connectDB();
 const app=express();
 const corsOptions = {
-  origin: 'https://blogger-frontend-7o83.onrender.com' , // your frontend URL
+  origin: 'https://blogger-backend-psi.vercel.app' , // your frontend URL
   credentials: true,
 
 };
