@@ -51,7 +51,7 @@ module.exports.Login = async (req, res, next) => {
         sameSite: 'None', // Ensure this if you're doing cross-site cookie sharing
 
   domain: "blogger-backend-tzyw.onrender.com",
-  maxAge: 3600000, // 24 hours
+  maxAge: 86400000, // 24 hours
       
 
       
