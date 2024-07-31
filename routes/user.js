@@ -6,6 +6,9 @@ const {userVerification} =require('../middleware/user')
 router.get('/',(req,res)=>{
     res.send('Home Page');
 })
+router.get('/login',(req,res)=>{
+    res.send('Login Page');
+})
 router.post("/signup",Signup);
 router.post("/login",Login);
 router.get('/getusers',userVerification,getUsers);
