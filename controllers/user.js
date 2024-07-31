@@ -49,7 +49,7 @@ module.exports.Login = async (req, res, next) => {
     httpOnly: true,
   secure: true,
   
-  domain: "blogger-backend-psi.vercel.app",
+  domain: "blogger-backend-tzyw.onrender.com",
   maxAge: 86400, // 24 hours
 
       
