@@ -1,10 +1,19 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const nodemailer=require('nodemailer');
+const axios=require('axios');
 const jwt=require('jsonwebtoken');
 module.exports.Signup = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
-    if(!name  || !email || !password  || name==='' || email==='' ||password==='')return res.status(400).json({message:'All fields are required',success:false});
+    const { name, email, password,captchaToken } = req.body;
+    if(!name  || !email || !password  || !captchaToken || name==='' || email==='' ||password==='')return res.status(400).json({message:'All fields are required',success:false});
+    const secretKey=process.env.SECRET_KEY;
+    const recaptchaResponse=await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${captchaToken}`);
+    console.log(recaptchaResponse);
+    if(!recaptchaResponse.data.success){
+     return res.status(400).json({ message: "reCAPTCHA failed", success: false });
+    }
+  
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.json({ message: "User already exists" });
@@ -25,10 +34,16 @@ module.exports.Signup = async (req, res, next) => {
 
 module.exports.Login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password || email==='' || password==='') {
+    const { email, password,captchaToken } = req.body;
+    if (!email || !password || !captchaToken || email==='' || password==='') {
       return res.json({ message: "All fields are required" });
     }
+   const secretKey=process.env.SECRET_KEY;
+   const recaptchaResponse=await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${captchaToken}`);
+   
+   if(!recaptchaResponse.data.success){
+    return res.status(400).json({ message: "reCAPTCHA failed", success: false });
+   }
     const user = await User.findOne({ email });
     if (!user) {
       return res.json({
@@ -46,13 +61,9 @@ module.exports.Login = async (req, res, next) => {
     const token = jwt.sign({ id:user?._id,isAdmin:user?.isAdmin }, process.env.TOKEN_KEY);
     res.cookie("token", token, {
     
-    httpOnly: true,
-  secure: true,
-        sameSite: 'None', // Ensure this if you're doing cross-site cookie sharing
+     httpOnly: true,
 
-  domain: "blogger-backend-tzyw.onrender.com",
   maxAge: 86400000, // 24 hours
-      
 
       
      
@@ -68,7 +79,8 @@ module.exports.Login = async (req, res, next) => {
         name: user.name,
         email: user.email,
         profilePicture: user?.profilePicture,
-        isAdmin:user?.isAdmin
+        isAdmin:user?.isAdmin,
+        
       },
       token,
     });
@@ -120,6 +132,7 @@ module.exports.updateUser = async (req, res, next) => {
       } },
       { new: true }
     );
+   
     const {password,...user}=updatedUser._doc;
     return res.status(201).send({
       message: "Profile Updated Successfully",
@@ -211,6 +224,7 @@ module.exports.getUsers = async (req, res) => {
     });
 
     const totalUsers = await User.countDocuments();
+  
 
     const now = new Date();
         
