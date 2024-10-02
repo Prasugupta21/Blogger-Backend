@@ -260,7 +260,7 @@ module.exports.Google = async (req, res) => {
 
   domain: "blogger-backend-tzyw.onrender.com",
   maxAge: 86400000, // 24 hours
-       }).status(200).json({user});
+       }).status(200).json({user,success:true});
     }
     else{
       const generatedPassword=Math.random().toString(36).slice(-8)+Math.random().toString(36).slice(-8);
@@ -281,7 +281,7 @@ module.exports.Google = async (req, res) => {
   domain: "blogger-backend-tzyw.onrender.com",
   maxAge: 86400000, // 24 hours
       
-      }).status(200).json({user});
+      }).status(200).json({user,success:true});
     }
       
     
