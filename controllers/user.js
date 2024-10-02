@@ -275,7 +275,12 @@ module.exports.Google = async (req, res) => {
       
       const token=jwt.sign({id:user._id,isAdmin:user.isAdmin},process.env.TOKEN_KEY);
       res.cookie('token',token,{
-       httpOnly:true,
+      secure: true,
+        sameSite: 'None', // Ensure this if you're doing cross-site cookie sharing
+
+  domain: "blogger-backend-tzyw.onrender.com",
+  maxAge: 86400000, // 24 hours
+      
       }).status(200).json({user});
     }
       
