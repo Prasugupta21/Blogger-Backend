@@ -5,15 +5,9 @@ const axios=require('axios');
 const jwt=require('jsonwebtoken');
 module.exports.Signup = async (req, res, next) => {
   try {
-    const { name, email, password,captchaToken } = req.body;
-    if(!name  || !email || !password  || !captchaToken || name==='' || email==='' ||password==='')return res.status(400).json({message:'All fields are required',success:false});
-    const secretKey=process.env.SECRET_KEY;
-    const recaptchaResponse=await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${captchaToken}`);
-    console.log(recaptchaResponse);
-    if(!recaptchaResponse.data.success){
-     return res.status(400).json({ message: "reCAPTCHA failed", success: false });
-    }
-  
+    const { name, email, password } = req.body;
+    if(!name  || !email || !password  || name==='' || email==='' ||password==='')return res.status(400).json({message:'All fields are required',success:false});
+    
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.json({ message: "User already exists" });
@@ -34,16 +28,11 @@ module.exports.Signup = async (req, res, next) => {
 
 module.exports.Login = async (req, res, next) => {
   try {
-    const { email, password,captchaToken } = req.body;
-    if (!email || !password || !captchaToken || email==='' || password==='') {
+    const { email, password } = req.body;
+    if (!email || !password || email==='' || password==='') {
       return res.json({ message: "All fields are required" });
     }
-   const secretKey=process.env.SECRET_KEY;
-   const recaptchaResponse=await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${captchaToken}`);
    
-   if(!recaptchaResponse.data.success){
-    return res.status(400).json({ message: "reCAPTCHA failed", success: false });
-   }
     const user = await User.findOne({ email });
     if (!user) {
       return res.json({
