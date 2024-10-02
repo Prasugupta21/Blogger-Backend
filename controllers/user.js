@@ -1,13 +1,10 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
-const nodemailer=require('nodemailer');
-const axios=require('axios');
 const jwt=require('jsonwebtoken');
 module.exports.Signup = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
     if(!name  || !email || !password  || name==='' || email==='' ||password==='')return res.status(400).json({message:'All fields are required',success:false});
-    
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.json({ message: "User already exists" });
@@ -32,7 +29,6 @@ module.exports.Login = async (req, res, next) => {
     if (!email || !password || email==='' || password==='') {
       return res.json({ message: "All fields are required" });
     }
-   
     const user = await User.findOne({ email });
     if (!user) {
       return res.json({
@@ -49,9 +45,14 @@ module.exports.Login = async (req, res, next) => {
     }
     const token = jwt.sign({ id:user?._id,isAdmin:user?.isAdmin }, process.env.TOKEN_KEY);
     res.cookie("token", token, {
+    
+    httpOnly: true,
+  secure: true,
+        sameSite: 'None', // Ensure this if you're doing cross-site cookie sharing
 
-
+  domain: "blogger-backend-tzyw.onrender.com",
   maxAge: 86400000, // 24 hours
+      
 
       
      
@@ -67,8 +68,7 @@ module.exports.Login = async (req, res, next) => {
         name: user.name,
         email: user.email,
         profilePicture: user?.profilePicture,
-        isAdmin:user?.isAdmin,
-        
+        isAdmin:user?.isAdmin
       },
       token,
     });
@@ -120,7 +120,6 @@ module.exports.updateUser = async (req, res, next) => {
       } },
       { new: true }
     );
-   
     const {password,...user}=updatedUser._doc;
     return res.status(201).send({
       message: "Profile Updated Successfully",
@@ -212,7 +211,6 @@ module.exports.getUsers = async (req, res) => {
     });
 
     const totalUsers = await User.countDocuments();
-  
 
     const now = new Date();
         
