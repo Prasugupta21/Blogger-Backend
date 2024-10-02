@@ -160,6 +160,7 @@ module.exports.deleteUser = async (req, res) => {
         .status(400)
         .json({ message: "User Not Found ", success: false });
 
+    res.clearCookie('token');
     res
      
       .status(200)
