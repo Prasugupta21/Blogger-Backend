@@ -49,8 +49,7 @@ module.exports.Login = async (req, res, next) => {
     }
     const token = jwt.sign({ id:user?._id,isAdmin:user?.isAdmin }, process.env.TOKEN_KEY);
     res.cookie("token", token, {
-    
-     httpOnly: true,
+
 
   maxAge: 86400000, // 24 hours
 
